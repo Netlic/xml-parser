@@ -1,0 +1,21 @@
+{
+    "name": "netlic/xml-serializer",
+    "description": "Library to serialize objects to XML. PHP version of .NET library.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Branislav Kutnik",
+            "email": "branislav.kutnik@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "phpdocumentor/reflection-docblock": "^3.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "Netlic\\XmlSerializer\\" : "src/"
+        }
+    }
+}
