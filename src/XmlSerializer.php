@@ -30,16 +30,18 @@ class XmlSerializer
 
     /**
      * @param object $object
+     * @param boolean $stripClassNamespaces
      * @return string
      * @throws \ReflectionException
      * @throws \Exception
      */
-    public function serialize(object $object, string $filename = null): string
+    public function serialize(object $object, $stripClassNamespaces = true): string
     {
         $reflectedObject = new \ReflectionClass($object);
+        $className = $stripClassNamespaces ? $this->stripClassNamespaces($reflectedObject->getName()) : $reflectedObject->getName();
 
-        $objectTag = new XmlTag($reflectedObject->getName());
-        $objectTag->addNamespaces(['test' => 'test5']);
+        $objectTag = new XmlTag($className);
+        //$objectTag->addNamespaces(['test' => 'test5']);
         foreach ($reflectedObject->getProperties() as $property) {
             $phpDoc = $this->serializeWithDoc($property);
 
@@ -72,13 +74,8 @@ class XmlSerializer
                 continue;
             }
         }
-        $renderedXml = (string)$objectTag;
 
-        if ($filename) {
-            return (new \SimpleXMLElement($renderedXml))->saveXML($filename);
-        }
-
-        return $renderedXml;
+        return (string)$objectTag;
     }
 
     /**
@@ -114,5 +111,19 @@ class XmlSerializer
         }
 
         return $arr;
+    }
+
+    /**
+     * @param string $className
+     * @return string
+     */
+    private function stripClassNamespaces($className)
+    {
+        if (strpos($className, '\\') !== false) {
+            $classNameArray = explode('\\', $className);
+            $className = end($classNameArray);
+        }
+
+        return $className;
     }
 }
